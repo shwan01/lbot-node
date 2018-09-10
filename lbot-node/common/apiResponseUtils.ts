@@ -13,9 +13,9 @@ export class ApiResponseUtils {
   /**
    * response 201
    */
-   static createResponse201 = (headers: string = null, body: any): Object => {
-     return ApiResponseUtils.createSuccess(201, headers, body);
-   };
+  static createResponse201 = (headers: string = null, body: any): Object => {
+    return ApiResponseUtils.createSuccess(201, headers, body);
+  };
 
   /**
    * response 204
@@ -29,7 +29,7 @@ export class ApiResponseUtils {
     const response = {
       statusCode: error.statusCode || 501,
       body: error.message,
-    }
+    };
     return response;
   }
 
