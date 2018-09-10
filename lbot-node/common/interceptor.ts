@@ -2,11 +2,11 @@ import * as Promise from 'bluebird';
 
 export class Interceptor {
 
-  static validateGetTodosList = (event) => {
+  static validateGetTasksList = (event) => {
     return Promise.resolve();
   }
 
-  static validateGetTodosById = (event) => {
+  static validateGetTasksById = (event) => {
     if (event.pathParameters && event.pathParameters.id){
       return Promise.resolve();
     }else{

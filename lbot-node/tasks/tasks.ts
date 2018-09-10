@@ -2,9 +2,9 @@ import { DynamoDB } from 'aws-sdk';
 import { ApiResponseUtils } from '../common/apiResponseUtils';
 
 /**
- * TODO一覧取得API
+ * タスク一覧取得API
  */
-export const getTodosList = (event, contents, callback): void => {
+export const getTasksList = (event, contents, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();
   const params = {
     TableName: 'task',
@@ -21,9 +21,9 @@ export const getTodosList = (event, contents, callback): void => {
 };
 
 /**
- * TODO取得ByIdAPI
+ * タスク取得ByIdAPI
  */
-export const getTodosById = (event, contents, callback): void => {
+export const getTasksById = (event, contents, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();
   const params = {
     TableName: 'task',
@@ -43,7 +43,7 @@ export const getTodosById = (event, contents, callback): void => {
 };
 
 /**
- * TODO追加API
+ * タスク追加API
  */
 export const addTasks = (event, content, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();

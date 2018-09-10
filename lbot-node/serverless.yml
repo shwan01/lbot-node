@@ -42,25 +42,25 @@ functions:
           path: hello
           method: get
   list:
-    handler: dist/todos/handler.getTodosList
+    handler: dist/tasks/handler.getTasksList
     events:
       - http:
-          path: todos
+          path: tasks
           method: get
           cors: true
 
   get:
-    handler: dist/todos/handdler.getTodosById
+    handler: dist/tasks/handdler.getTasksById
     events:
       - http:
-          path: todos/{id}
+          path: tasks/{id}
           method: get
           cors: true
   add:
-    handler: dist/todos/handler.addTasks
+    handler: dist/tasks/handler.addTasks
     events:
       - http:
-          path: todos
+          path: tasks
           method: post
           cors: true
 

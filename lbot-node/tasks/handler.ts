@@ -3,25 +3,25 @@ import { Interceptor } from '../common/interceptor';
 import * as tasks from './tasks';
 
 /**
- * TODO一覧取得API
+ * タスク一覧取得API
  */
-export const getTodosList = (event, contents, callback): void => {
-  Interceptor.validateGetTodosList(event)
-        .then(() => tasks.getTodosList(event, contents, callback))
+export const getTasksList = (event, contents, callback): void => {
+  Interceptor.validateGetTasksList(event)
+        .then(() => tasks.getTasksList(event, contents, callback))
         .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
 };
 
 /**
- * TODO取得ByIdAPI
+ * タスク取得ByIdAPI
  */
-export const getTodosById = (event, contents, callback): void => {
-  Interceptor.validateGetTodosById(event)
-        .then(() => tasks.getTodosById(event, contents, callback))
+export const getTasksById = (event, contents, callback): void => {
+  Interceptor.validateGetTasksById(event)
+        .then(() => tasks.getTasksById(event, contents, callback))
         .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
 };
 
 /**
- * TODO追加API
+ * タスク追加API
  */
 export const addTasks = (event, contents, callback): void => {
   Interceptor.validateAddTasks(event)
