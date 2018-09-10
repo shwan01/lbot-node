@@ -14,14 +14,8 @@ export const getTodosList = (event, contents, callback):void => {
         TableName: process.env.DYNAMODB_TABLE,
     };
     dynamoDb.scan(params, (error, result) => {
-        // TODO エラー処理仮置き
         if (error) {
-            console.error(error);
-            callback(null, {
-            statusCode: error.statusCode || 501,
-            headers: { 'Content-Type': 'text/plain' },
-            body: 'Couldn\'t fetch the todos.',
-            });
+            callback(null, ApiResponseUtils.createErrorResponse(error));
             return;
         }
         const response = {
@@ -43,14 +37,8 @@ export const getTodosById = (event, contents, callback):void => {
         },
       };
     dynamoDb.get(params, (error, result) => {
-        // TODO エラー処理仮置き
         if (error) {
-            console.error(error);
-            callback(null, {
-            statusCode: error.statusCode || 501,
-            headers: { 'Content-Type': 'text/plain' },
-            body: 'Couldn\'t fetch the todo item.',
-            });
+            callback(null, ApiResponseUtils.createErrorResponse(error));
             return;
         }
         const response = {
@@ -84,14 +72,8 @@ export const addTasks = (event, content, callback):void => {
       };
     // write the todo to the database
     dynamoDb.put(params, (error, result) => {
-        // handle potential errors
         if (error) {
-            console.error(error);
-            callback(null, {
-                statusCode: error.statusCode || 501,
-                headers: { 'Content-Type': 'text/plain' },
-                body: 'Couldn\'t create the todo item.',
-            });
+            callback(null, ApiResponseUtils.createErrorResponse(error));
             return;
         }
         callback(null, ApiResponseUtils.createResponse201(null, {}));

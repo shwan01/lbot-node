@@ -24,6 +24,15 @@ export class ApiResponseUtils {
 //     return ApiResponseUtils.createSuccess(204, headers, body);
 //   };
 
+  static createErrorResponse = (error: any): Object => {
+    console.error(error);
+    const response = {
+      statusCode: error.statusCode || 501,
+      body: error.message,
+    }
+    return response;
+  }
+
   /**
    * 正常系レスポンス生成共通処理
    */
