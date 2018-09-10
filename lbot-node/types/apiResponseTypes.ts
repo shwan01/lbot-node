@@ -9,9 +9,9 @@ export namespace ApiResponseTypes {
   }
 
   /**
-   * TODO一覧取得APIレスポンス
+   * タスク一覧取得APIレスポンス
    */
-  export interface GetTodosListResponse {
+  export interface GetTasksListResponse {
     todos: [
       {
         id: string,
