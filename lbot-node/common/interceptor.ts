@@ -3,7 +3,11 @@ import * as Promise from 'bluebird';
 export class Interceptor {
 
   static validateGetTasksList = (event) => {
-    return Promise.resolve();
+    if (event.queryStringParameters && event.queryStringParameters.ownerId){
+      return Promise.resolve();
+    }else{
+      return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
+    }
   }
 
   static validateGetTasksById = (event) => {
