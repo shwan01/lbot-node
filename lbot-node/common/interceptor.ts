@@ -22,4 +22,12 @@ export class Interceptor {
         // TODO バリデーション
     return Promise.resolve();
   }
+
+  static validateDeleteTasks = (event) => {
+    if (event.queryStringParameters && event.queryStringParameters.ownerId && event.queryStringParameters.timestamp){
+      return Promise.resolve();
+    }else{
+      return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
+    }
+  }
 }

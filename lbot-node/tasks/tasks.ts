@@ -75,3 +75,23 @@ export const addTasks = (event, content, callback): void => {
     callback(null, ApiResponseUtils.createResponse201(null, {}));
   });
 };
+
+/**
+ * タスク削除API
+ */
+export const deleteTasks = (event, content, callback): void => {
+  const dynamoDb = new DynamoDB.DocumentClient();
+  const params = {
+    TableName: 'task',
+    Key: {
+      ownerId: event.queryStringParameters.ownerId,
+      timestamp: event.queryStringParameters.timestamp,
+    },
+  };
+  dynamoDb.delete(params, (error, result) => {
+    if (error) {
+      callback(null, ApiResponseUtils.createErrorResponse(error));
+    }
+    callback(null, ApiResponseUtils.createResponse204(null, {}));
+  });
+};

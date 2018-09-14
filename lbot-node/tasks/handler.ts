@@ -28,3 +28,12 @@ export const addTasks = (event, contents, callback): void => {
         .then(() => tasks.addTasks(event, contents, callback))
         .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
 };
+
+/**
+ * タスク削除API
+ */
+export const deleteTasks = (event, contents, callback): void => {
+  Interceptor.validateDeleteTasks(event)
+        .then(() => tasks.deleteTasks(event, contents, callback))
+        .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
+};
