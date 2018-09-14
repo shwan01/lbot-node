@@ -1,0 +1,63 @@
+{
+    "extends": [
+      "tslint-eslint-rules"
+    ],
+    "linterOptions": {
+      "exclude": [
+        "node_modules/**"
+      ]
+    },
+    "rules": {
+      // インデントが 2 スペースであること
+      "indent": [true, "spaces"],
+      "ter-indent": [true, 2, {"SwitchCase": 1}],
+      // クラス名とインターフェース名がパスカルケース(アッパーキャメル)であること
+      "class-name": true,
+      // 最終行に空行があること
+      "eofline": true,
+      // 行末に不要な空白がないこと
+      "no-trailing-whitespace": true,
+      // 空行が2行以上続かないこと
+      "no-consecutive-blank-lines": true,
+      // switch 文には default case があること
+      "switch-default": true,
+      // switch 文の最後は break で終わること
+      "switch-final-break": [true, "always"],
+      // 可能な限り const を使用すること
+      "prefer-const": true,
+      // var を使わないこと
+      "no-var-keyword": true,
+      // var や let を undefined で初期化しない
+      "no-unnecessary-initializer": true,
+      // 1行コメントはスラッシュ2つの後にスペースかスラッシュを書いていること
+      "comment-format": [true, "check-space"],
+      // クォートはシングルクォート('')で統一
+      "quotemark": [true, "single"],
+      // 文末にセミコロンがあること
+      "semicolon": [true, "always", "ignore-bound-class-methods"],
+      // カンマを最後に付けること(Object等)
+      "trailing-comma": [
+        true,
+        {
+          "multiline": "always"
+        }
+      ],
+      // 指定の位置にスペースがあること
+      "whitespace": [
+        true,
+        // if・else・for・while の直後
+        "check-branch",
+        // 変数宣言のイコールの前後
+        "check-decl",
+        // 演算子の前後
+        "check-operator",
+        // import・export 文
+        "check-module",
+        // カンマ・セミコロンの後
+        "check-separator",
+        // 変数の型指定の前
+        "check-type"
+      ]
+    }
+  }
+  
