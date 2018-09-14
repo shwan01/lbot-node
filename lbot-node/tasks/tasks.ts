@@ -2,14 +2,17 @@ import { DynamoDB } from 'aws-sdk';
 import { ApiResponseUtils } from '../common/apiResponseUtils';
 
 /**
- * タスク一覧取得API
+ * ユーザー別タスク一覧取得API
  */
 export const getTasksList = (event, contents, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();
   const params = {
     TableName: 'task',
+    Key: {
+      ownerId: event.queryStringParameters.ownerId,
+    },
   };
-  dynamoDb.scan(params, (error, result) => {
+  dynamoDb.query(params, (error, result) => {
     if (error) {
       callback(null, ApiResponseUtils.createErrorResponse(error));
     }
