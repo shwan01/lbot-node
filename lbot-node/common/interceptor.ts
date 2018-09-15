@@ -19,8 +19,11 @@ export class Interceptor {
   }
 
   static validateAddTasks = (event) => {
-        // TODO バリデーション
-    return Promise.resolve();
+    if (event.body && event.body.ownerId && event.body.taskName){
+      return Promise.resolve();
+    }else{
+      return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
+    }
   }
 
   static validateDeleteTasks = (event) => {
