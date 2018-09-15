@@ -58,16 +58,12 @@ export const addTasks = (event, content, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();
   let body;
   const timestamp = new Date().getTime();
-  if (event.body) {
-    body = JSON.parse(event.body);
-  }else{
-    // TODO Validation
-  }
+  body = JSON.parse(event.body);
   const params = {
     TableName: 'task',
     Item: {
       ownerId: body.ownerId,
-      timestamp: body.timestamp,
+      timestamp: timestamp,
       taskName: body.taskName,
       dueDate: body.dueDate ? body.dueDate : null,
       assignedUserId: body.assignedUserId ? body.assignedUserId : null,
