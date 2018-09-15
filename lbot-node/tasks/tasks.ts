@@ -8,9 +8,15 @@ export const getTasksList = (event, contents, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();
   const params = {
     TableName: 'task',
-    Key: {
-      ownerId: event.queryStringParameters.ownerId,
+    KeyConditionExpression: "#primeKey = :primeKeyValue AND begins_with(#rengeKey, :rengeKeyValue)",
+    ExpressionAttributeNames:{
+        "#primeKey": "ownerId",
+        "#rengeKey": "timestamp"
     },
+    ExpressionAttributeValues: {
+        ":primeKeyValue": event.queryStringParameters.ownerId,
+        ":rengeKeyValue": '20'
+    }
   };
   dynamoDb.query(params, (error, result) => {
     if (error) {
