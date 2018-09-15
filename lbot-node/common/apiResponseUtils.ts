@@ -20,9 +20,9 @@ export class ApiResponseUtils {
   /**
    * response 204
    */
-//   static createResponse204 = (headers: string = null, body: any): Object => {
-//     return ApiResponseUtils.createSuccess(204, headers, body);
-//   };
+  static createResponse204 = (headers: string = null, body: any): Object => {
+    return ApiResponseUtils.createSuccess(204, headers, body);
+  };
 
   static createErrorResponse = (error: any): Object => {
     console.error(error);

@@ -41,7 +41,7 @@ functions:
       - http:
           path: hello
           method: get
-  list:
+  getTasksList:
     handler: dist/tasks/handler.getTasksList
     events:
       - http:
@@ -49,19 +49,27 @@ functions:
           method: get
           cors: true
 
-  get:
+  getTasksById:
     handler: dist/tasks/handdler.getTasksById
     events:
       - http:
           path: tasks/{id}
           method: get
           cors: true
-  add:
+  addTasks:
     handler: dist/tasks/handler.addTasks
     events:
       - http:
           path: tasks
           method: post
+          cors: true
+
+  deleteTasks:
+    handler: dist/tasks/handler.deleteTasks
+    events:
+      - http:
+          path: tasks
+          method: delete
           cors: true
 
 resources:
