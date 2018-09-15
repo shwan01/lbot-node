@@ -19,7 +19,8 @@ export class Interceptor {
   }
 
   static validateAddTasks = (event) => {
-    if (event.body && event.body.ownerId && event.body.taskName){
+    const body = event.body? JSON.parse(event.body) : null;
+    if(body && body.ownerId && body.taskName){
       return Promise.resolve();
     }else{
       return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
