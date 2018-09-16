@@ -1,0 +1,58 @@
+.app{
+    padding: 100px 100px;
+}
+
+.pd10{
+    padding: 80px;
+}
+
+.pdb10{
+    padding-top: 20px;
+    padding-bottom: 80px;
+}
+
+.pdb1{
+    padding-bottom: 40px;
+}
+
+.pdr10{
+    padding-right:130px;
+}
+
+.pdt30{
+    padding-left: 100px;
+    padding-top: 100px;
+}
+
+.pl50{
+    padding-left: 50px;
+}
+
+.wi100{
+    width: 100%;
+}
+
+.fo20{
+    font-size: 40px;
+}
+
+.input-big{
+    width: 600px;
+    height: 70px;
+    font-size: 50px;
+}
+
+.height80{
+    height: 80px;
+}
+
+.label-big{
+    width: 600px;
+    font-size: 50px;  
+    padding: 10px;
+}
+.taskSubmitbtn{
+    font-size: 50px;
+    height: 130px;
+    width: 500px;
+}
