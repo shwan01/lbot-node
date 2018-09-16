@@ -24,6 +24,15 @@ provider:
         - logs:PutLogEvents
       Resource:
         - "*"
+custom:
+  defaultStage: dev
+  profiles:
+    dev: sls
+    prd: sls
+  conf:
+    environment:
+      dev: ${file(./conf/dev.json)}
+      prd: ${file(./conf/prd.json)}
 
 # you can add packaging information here
 #package:
@@ -47,30 +56,34 @@ functions:
       - http:
           path: tasks
           method: get
-          cors: true
-
   getTasksById:
     handler: dist/tasks/handdler.getTasksById
     events:
       - http:
           path: tasks/{id}
           method: get
-          cors: true
   addTasks:
     handler: dist/tasks/handler.addTasks
     events:
       - http:
           path: tasks
           method: post
-          cors: true
-
   deleteTasks:
     handler: dist/tasks/handler.deleteTasks
     events:
       - http:
           path: tasks
           method: delete
-          cors: true
+  postLine:
+    handler: dist/line/handler.postLine
+    events:
+      - http:
+          path: line
+          method: post
+    environment:
+      CHANNEL_ACCESS_TOKEN: ${self:custom.conf.environment.${self:provider.stage}.CHANNEL_ACCESS_TOKEN}
+      API_URI: ${self:custom.conf.environment.${self:provider.stage}.API_URI}
+
 
 resources:
   Resources:
