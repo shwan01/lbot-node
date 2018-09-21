@@ -45,8 +45,12 @@ export const receiveMessages = (lineEvent, contents, callback): void => {
                   replyMessage('なんかおかしいよ', replyToken);
                 });
       break;
+    case '登録':
+      //てすと用
+      replyMessage('line://app/1607639347-VyorMBo8', replyToken);
     default:
-      replyMessage('まだできないよ', replyToken);
+      console.log('[INFO]判定外テキストを受信、処理を終了')
+      // replyMessage('まだできないよ', replyToken);
       break;
   }
 };

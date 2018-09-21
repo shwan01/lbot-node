@@ -23,8 +23,9 @@ export const postLine = (event, contents, callback): void => {
     case 'leave':
     case 'postback':
     default:
-            // TODO あとで直す
-      callback(null, 'まだできないよ');
+      // TODO あとで直す
+      console.log('[INFO] message, follow以外を受信、処理を終了')
+      // callback(null, 'まだできないよ');
       break;
   }
 };
