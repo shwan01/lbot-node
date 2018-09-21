@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@material/textfield": "^0.39.3",
+    "@types/bluebird": "^3.5.24",
     "@types/material__textfield": "^0.35.0",
     "isomorphic-fetch": "^2.2.1",
     "react": "^16.5.1",

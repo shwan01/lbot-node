@@ -1,19 +1,187 @@
 import React from 'react';
+import * as Bluebird from 'bluebird';
 import ReactDOM from 'react-dom';
+import InputFieled from './inputField';
+import Plusbtn from './plusbtn';
 
-
+/**
+ * HackMe 多すぎ、、分割したい、、、
+ */
 export default class InputForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tasks:[]
+        };
+    }
 
-    //エラーが出て進まない、、、、、
-    callAddTasksApi() {
-        //const {userId} = this.props;
-        //const formData = new FormData(ReactDOM.findDOMNode(this.refs.form));
+    setDateValue(i){
+        //HackMe まとめたい、、、綺麗にしたい、、、
+        switch(i){
+            case 0:
+                var today = new Date();
+                today.setDate(today.getDate());
+                var yyyy = today.getFullYear();
+                var mm = ("0"+(today.getMonth()+1)).slice(-2);
+                var dd = ("0"+today.getDate()).slice(-2);        
+                this.refs.newDate.value=yyyy+'-'+mm+'-'+dd;
+                this.refs.date0.classList.add('active');
+                this.refs.date1.classList.remove('active');
+                this.refs.date2.classList.remove('active');
+                break;
+            case 1:
+                var tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate()+1); //翌日の日付を取得
+                var yyyy = tomorrow.getFullYear();
+                var mm = ("0"+(tomorrow.getMonth()+1)).slice(-2);
+                var dd = ("0"+tomorrow.getDate()).slice(-2);        
+                this.refs.newDate.value=yyyy+'-'+mm+'-'+dd;
+                this.refs.date0.classList.remove('active');
+                this.refs.date1.classList.add('active');
+                this.refs.date2.classList.remove('active');
+                break;
+            case 2:
+                this.refs.newDate.value='';
+                this.refs.date0.classList.remove('active');
+                this.refs.date1.classList.remove('active');
+                this.refs.date2.classList.add('active');
+                break;
+            default:
+            break;
+        }
+    }
+   
+    addTask() {
+        console.log('add');
+        const taskName = this.refs.newText.value;
+        const dueDate = this.refs.newDate.value;
+        // タスク名フォームが空なら何もしない
+        if(!taskName){
+            console.log('[add]taskName is null');
+            return;
+        }
+        // 追加
+        this.state.tasks.push({
+            taskName: taskName,
+            dueDate: dueDate
+        });
+
+        //保存
+        this.setState({tasks : this.state.tasks});
+        console.log('[add]'+ taskName + ' / ' + dueDate);
+        // テキストフィールド初期化
+        this.refs.newText.value='';
+        this.refs.newDate.value='';
+    }
+
+    // 削除機能
+    deleteTask(i) {
+        // 削除
+        this.state.tasks.splice(i, 1);
+        // 保存
+        this.setState({tasks : this.state.tasks});
+    }
+
+    submitTasks(){
+        const tasks = this.state.tasks;
+        if(tasks === []){
+            console.log('[submit]taskName is null');
+            return;
+        };
+
+        const callApi = Bluebird.promisify(
+            tasks.forEach((task)=>{
+                this.callAddTasksApi(task);
+            })
+        );
+        
+        callApi.then(() => {
+            //一旦ここに書いておく
+            // TODO: ↑が終わってから（成功してから）これやるようにする。
+            // メッセージの内容は仮
+            liff.sendMessages([
+                {
+                type: 'text',
+                text: '[SUCCESS]' + tasks.length + '件登録'
+                }
+            ]).then(() => {
+                liff.closeWindow()
+            })
+        })
+
+        // const messages = this.createMessage(tasks);
+        // console.log(messages);
+            //  エラーがでるから一旦仮のメッセージで代用
+            // liff.sendMessages(messages);
+    }
+
+    createMessage(tasks){
+        let messages = [];
+        let columns = [];
+        tasks.forEach((task) => {
+            const name = task.taskName;
+            const date = task.dueDate;
+            let column;
+            if(date){
+                column = {
+                    "title": task.taskName,
+                    "text": "期限: " + task.dueDate,
+                    "actions": [
+                        {
+                            "type": "uri",
+                            "label": "俺にまかせろ",
+                            "uri": ""
+                        }
+                    ]
+                };
+            }else{
+                column = {
+                    "title": task.taskName,
+                    "text": "期限なし",
+                    "actions": [
+                        {
+                            "type": "uri",
+                            "label": "俺にまかせろ",
+                            "uri": "http://example.com"
+                        }
+                    ]
+                };
+            }
+            columns.push(column);
+        });
+        const message = {
+                "type": "template",
+                "template": {
+                    "type": "carousel",
+                    columns
+                }
+        };
+        messages.push(message);
+        return messages;
+    }
+
+    callAddTasksApi(task) {
+        const {type} = this.props;
+        let id;
+        switch(type){
+            case 'room':
+                id = this.props.roomId;
+                break;
+            case 'group':
+                id = this.props.groupId;
+                break;
+            case 'utou':
+            default:
+                id = this.props.userId;
+        }
         const url = 'https://xi9q10jx5j.execute-api.ap-northeast-1.amazonaws.com/dev/tasks';
         const data = {
-            "ownerId": "hoge",
-            "taskName": "hoge"
-         }
-         console.log(data);
+            "ownerId": id,
+            "taskName": task.taskName,
+            "dueDate": task.dueDate
+        }
+        console.log('[callApi]' + data.taskName + ' / ' + data.dueDate);
+        console.log(data);
         $.ajax({
             url: url,
             type:'POST',
@@ -21,46 +189,66 @@ export default class InputForm extends React.Component {
             contentType: 'application/JSON',
             dataType : 'JSON',
         }).done(function (data) {
-            alert('ok');
+            console.log(JSON.stringify(data));
         }).fail(function (err) {
             console.log(JSON.stringify(err));
-            alert('err');
+            // TODO: Errorの時は閉じずにエラーを教える.
+            // HackMe: 今はCORSのエラーが絶対くるのでとりあえず閉じている.
         });
     }
+
 
     render() {
         return (
             <div>
-            <form ref={'form'}>
-                <div>
-                    <div className={"mdl-textfield mdl-js-textfield mdl-textfield--floating-label"}>
-                        <input name={'taskName'} className={"mdl-textfield__input input-big"} type={"text"} id={"taskName"}/>
-                        <label className={"mdl-textfield__label label-big"} for={"taskName"}>なにするの?</label>
+                    <div>
+                        <div className={"form-group row"}>
+                            <div className={"input-group mb-3"}>
+                                <input type={"text"} className={"form-control form-taskName"} placeholder={"なにする？"} ref={"newText"}/>
+                                <div className={"input-group-append"}>
+                                    <button className={"btn btn-outline-secondary add-btn"} type={"button"} id={"button-addon2"} onClick={() => this.addTask()}>追加</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2 mgr20">
+                                <button type={"button"} className={"btn btn-outline-secondary btn-lg wi100 date-btn active"} onClick={()=>this.setDateValue(2)} ref={"date2"}>期限なし</button>
+                            </div>
+                            <div class="form-group col-md-2 mgr20">
+                                <button type={"button"} className={"btn btn-outline-secondary btn-lg wi100 date-btn"} onClick={()=>this.setDateValue(0)} ref={"date0"}>今日中</button>
+                            </div>
+                            <div class="form-group col-md-2 mgr20">
+                                <button type={"button"} className={"btn btn-outline-secondary btn-lg wi100 date-btn"} onClick={()=>this.setDateValue(1)} ref={"date1"}>明日</button>
+                            </div>
+                            <div class="form-group col-md-5">
+                                <div className={"input-group"}>
+                                    <div className={"input-group-append"}>
+                                        <label for={"date-input"}>
+                                        <span class="input-group-text date-btn" id="basic-addon2">日付指定</span>
+                                        </label>
+                                    </div>
+                                    <input className={"form-control btn-lg date-btn"} type={"date"} id={"date-input"} ref={"newDate"}/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className={"pdb10"}>
-                    <div className={"mdl-textfield mdl-js-textfield"}>
-                        <label className={"mdl-textfield__label label-big height80"} for={"dueDate"}>いつまで?</label>
+                    <div className={"tasks-list"}>
+                    <ul class="list-group">
+                        {this.state.tasks.map((task, i) => {
+                            return <li key={i} class="list-group-item tasks-list-part">
+                                    {task.taskName}
+                                </li>
+                        })}
+                    </ul>
                     </div>
-                </div>
-                <div className={"pl50"}> 
-                    <label className={"mdl-radio mdl-js-radio mdl-js-ripple-effect pdr10"} for={"option-1"}>
-                            <input type="radio" id="option-1" className={"mdl-radio__button"} name={"options"} value="1" checked/>
-                            <span className={"mdl-radio__label fo20"}>今日</span>
-                    </label>
-                    <label className={"mdl-radio mdl-js-radio mdl-js-ripple-effect pdr10"} for={"option-2"}>
-                            <input type="radio" id="option-2" className={"mdl-radio__button"} name={"options"} value="2"/>
-                            <span className={"mdl-radio__label fo20"}>明日</span>
-                    </label>
-                    <label className={"mdl-radio mdl-js-radio mdl-js-ripple-effect"} for={"option-3"}>
-                            <input type="radio" id="option-3" className={"mdl-radio__button"} name={"options"} value="3"/>
-                            <span className={"mdl-radio__label fo20"}>そのうち</span>
-                    </label>   
-                </div>
-                <div className={"pdt30"}>
-                    <button className={"taskSubmitbtn"} onClick={() => this.callAddTasksApi()}>登録</button>
-                </div>   
-            </form>
+                    <div class="row mx-auto submit-form">
+                        <div className={"mgr80"}>
+                            <button type="button" class="btn btn-lg btn-primary taskSubmitbtn" onClick={() => this.submitTasks()}>送信する</button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary btn-lg taskSubmitbtn">もどる</button>
+                        </div>
+                    </div>
             </div>
         );
     }

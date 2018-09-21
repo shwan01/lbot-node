@@ -24,12 +24,29 @@
     padding-top: 100px;
 }
 
+.mgr20{
+    margin-right: 20px;
+}
+
+.mgr40{
+    margin-right: 40px;
+}
+
+.mgr80{
+    margin-right: 80px;
+}
+
 .pl50{
     padding-left: 50px;
 }
 
 .wi100{
     width: 100%;
+}
+
+.add-btn{
+    width: 140px;
+    font-size: 22px;
 }
 
 .fo20{
@@ -52,7 +69,32 @@
     padding: 10px;
 }
 .taskSubmitbtn{
-    font-size: 50px;
-    height: 130px;
-    width: 500px;
+    font-size: 26px;
+    width: 180px;
+    height: 70px;
+}
+
+.form-taskName{
+    height: 100px;
+    padding: 40px;
+    font-size: 40px;
+}
+
+.tasks-list{
+    margin-top: 40px;
+}
+
+.tasks-list-part{
+    padding: 20px;
+    font-size: 24px;
+}
+
+.submit-form{
+    width:440px;
+    margin-top: 40px;
+}
+
+.date-btn{
+    height: 80px;
+    font-size: 22px;
 }
