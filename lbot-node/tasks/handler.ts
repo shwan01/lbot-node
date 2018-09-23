@@ -37,3 +37,21 @@ export const deleteTasks = (event, contents, callback): void => {
         .then(() => tasks.deleteTasks(event, contents, callback))
         .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
 };
+
+/**
+ * タスク情報更新API
+ */
+export const updateTasks = (event, contents, callback): void => {
+  Interceptor.validateUpadateTasks(event)
+        .then(() => tasks.updateTasks(event, contents, callback))
+        .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
+};
+
+/**
+ * 完了ステータス更新API
+ */
+export const updateComplicationStatus = (event, contents, callback): void => {
+  Interceptor.validateUpdateComplicationStatus(event)
+        .then(() => tasks.updateComplicationStatus(event, contents, callback))
+        .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
+};

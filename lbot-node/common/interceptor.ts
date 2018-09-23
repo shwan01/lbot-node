@@ -34,4 +34,24 @@ export class Interceptor {
       return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
     }
   }
+
+  static validateUpadateTasks = (event) => {
+    
+    const body = event.body? JSON.parse(event.body) : null;
+    console.log(JSON.parse(event.body));
+    if(body.taskName || body.dueDate || body.assignedUserId){
+      return Promise.resolve();
+    }else{
+      return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
+    }
+  }
+
+  static validateUpdateComplicationStatus = (event) => {
+    const body = event.body? JSON.parse(event.body) : null;
+    if(typeof(body.) === 'boolean'){
+      return Promise.resolve();
+    }else{
+      return Promise.reject({statuCode: 400, message: 'パラメータが不正です'});
+    }
+  }
 }

@@ -94,7 +94,18 @@ functions:
       CHANNEL_ACCESS_TOKEN: ${self:custom.conf.environment.${self:provider.stage}.CHANNEL_ACCESS_TOKEN}
       API_URI: ${self:custom.conf.environment.${self:provider.stage}.API_URI}
 
-
+  updateTasks:
+    handler: dist/tasks/handler.updateTasks
+    events:
+      - http:
+          path: tasks
+          method: put
+  updateComplicationStatus:
+    handler: dist/tasks/handler.updateComplicationStatus
+    events:
+      - http:
+          path: tasks/complicationStatus
+          method: put
 resources:
   Resources:
     TodosDynamoDbTable:
