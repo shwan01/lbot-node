@@ -97,3 +97,87 @@ export const deleteTasks = (event, content, callback): void => {
     callback(null, ApiResponseUtils.createResponse204(null, {}));
   });
 };
+
+
+/**
+ * タスク情報更新API
+ */
+export const updateTasks = (event, content, callback): void => {
+  const dynamoDb = new DynamoDB.DocumentClient();
+  const body = JSON.parse(event.body);
+  // update the isComplicated to the database
+    dynamoDb.update(generateParams(body), (error, result) => {
+      // handle potential errors
+      if (error) {
+          callback(null, ApiResponseUtils.createErrorResponse(error));
+          }
+      callback(null, ApiResponseUtils.createResponse201(null, {}));
+  });
+};
+
+/**
+ * 完了ステータス更新API
+ */
+export const updateComplicationStatus = (event, content, callback): void => {
+  const dynamoDb = new DynamoDB.DocumentClient();
+  const body = JSON.parse(event.body);
+  const params = {
+    TableName: 'task',
+    Key:{
+      "ownerId": body.ownerId,
+      "timestamp": body.timestamp,
+  },
+    UpdateExpression: "set isComplicated = :r",
+    ExpressionAttributeValues:{
+        ":r": body.isComplicated,
+      },
+    ReturnValues:"UPDATED_NEW"
+      };
+  // update the isComplicated to the database
+    dynamoDb.update(params, (error, result) => {
+      // handle potential errors
+      if (error) {
+          callback(null, ApiResponseUtils.createErrorResponse(error));
+          }
+      callback(null, ApiResponseUtils.createResponse201(null, {}));
+  });
+};
+
+/** 
+ *  タスク情報更新APIのparamを生成
+*/
+
+const generateParams =(body) => {
+
+  let updateExpression =  "set ";
+  var attributeMap ={};
+  if (body.isComplicated) {
+    updateExpression += "isComplicated = :t, "
+    attributeMap[":t"]= body.isComplicated;
+  };
+  if (body.taskName) {
+    updateExpression += "taskName = :r, "
+    attributeMap[":r"]=  body.taskName;
+  };
+  if (body.dueDate) {
+    updateExpression += "dueDate = :s, "
+    attributeMap[":s"]=  body.dueDate;
+  };
+  if (body.assignedUserId) {
+    updateExpression += "assignedUserId = :p, "
+    attributeMap[":p"]=  body.assignedUserId;
+  };
+  const ModifiedUpdateExpression = updateExpression.slice(0, -2);
+  let params = {
+    TableName: 'task',
+    Key:{
+      "ownerId": body.ownerId,
+      "timestamp": body.timestamp,
+    },
+    UpdateExpression: ModifiedUpdateExpression,
+    ExpressionAttributeValues:attributeMap,
+    ReturnValues:"UPDATED_NEW"
+      };
+      console.log(params);
+    return params;
+  }

@@ -47,7 +47,6 @@ functions:
       - http:
           path: tasks
           method: get
-          cors: true
 
   getTasksById:
     handler: dist/tasks/handdler.getTasksById
@@ -55,23 +54,31 @@ functions:
       - http:
           path: tasks/{id}
           method: get
-          cors: true
   addTasks:
     handler: dist/tasks/handler.addTasks
     events:
       - http:
           path: tasks
           method: post
-          cors: true
-
   deleteTasks:
     handler: dist/tasks/handler.deleteTasks
     events:
       - http:
           path: tasks
           method: delete
-          cors: true
 
+  updateTasks:
+    handler: dist/tasks/handler.updateTasks
+    events:
+      - http:
+          path: tasks
+          method: put
+  updateComplicationStatus:
+    handler: dist/tasks/handler.updateComplicationStatus
+    events:
+      - http:
+          path: tasks/complicationStatus
+          method: put
 resources:
   Resources:
     TodosDynamoDbTable:
