@@ -15,6 +15,43 @@ export default class InputForm extends React.Component {
         };
     }
 
+    componentWillMount() {
+        const {type} = this.props;
+        let id;
+        switch(type){
+            case 'room':
+                id = this.props.roomId;
+                break;
+            case 'group':
+                id = this.props.groupId;
+                break;
+            case 'utou':
+            default:
+                id = this.props.userId;
+        }
+        id = 'test01'
+        const url = 'https://xi9q10jx5j.execute-api.ap-northeast-1.amazonaws.com/dev/tasks?ownerId=' + id;
+        console.log('[callGetTasksApi]' + id);
+        $.ajax({
+            url: url,
+            type:'GET',
+            crossDomain: true,
+        }).done(function (data) {
+            console.log(JSON.stringify(data));
+            data.todos.forEach((task)=>{
+                this.state.tasks.push({
+                    taskName: task.taskName,
+                    dueDate: task.dueDate
+                });
+            })
+            this.setState({tasks : this.state.tasks});
+        }).fail(function (err) {
+            console.log(JSON.stringify(err));
+            // TODO: Errorの時は閉じずにエラーを教える.
+            // HackMe: 今はCORSのエラーが絶対くるのでとりあえず閉じている.
+        });
+    }
+
     setDateValue(i){
         //HackMe まとめたい、、、綺麗にしたい、、、
         switch(i){
@@ -68,6 +105,7 @@ export default class InputForm extends React.Component {
 
         //保存
         this.setState({tasks : this.state.tasks});
+        this.submitTasks(taskName, dueDate)
         console.log('[add]'+ taskName + ' / ' + dueDate);
         // テキストフィールド初期化
         this.refs.newText.value='';
@@ -82,18 +120,15 @@ export default class InputForm extends React.Component {
         this.setState({tasks : this.state.tasks});
     }
 
-    submitTasks(){
-        const tasks = this.state.tasks;
-        if(tasks === []){
+    submitTasks(taskName, dueDate){
+        if(!task){
             console.log('[submit]taskName is null');
             return;
         };
 
-        const callApi = Bluebird.promisify(
-            tasks.forEach((task)=>{
-                this.callAddTasksApi(task);
-            })
-        );
+
+        this.callAddTasksApi(taskName, dueDate);
+        
         
         callApi.then(() => {
             //一旦ここに書いておく
@@ -102,7 +137,7 @@ export default class InputForm extends React.Component {
             liff.sendMessages([
                 {
                 type: 'text',
-                text: '[SUCCESS]' + tasks.length + '件登録'
+                text: '[submit]'
                 }
             ]).then(() => {
                 liff.closeWindow()
@@ -160,7 +195,7 @@ export default class InputForm extends React.Component {
         return messages;
     }
 
-    callAddTasksApi(task) {
+    callAddTasksApi(taskName, dueDate) {
         const {type} = this.props;
         let id;
         switch(type){
@@ -177,8 +212,8 @@ export default class InputForm extends React.Component {
         const url = 'https://xi9q10jx5j.execute-api.ap-northeast-1.amazonaws.com/dev/tasks';
         const data = {
             "ownerId": id,
-            "taskName": task.taskName,
-            "dueDate": task.dueDate
+            "taskName": taskName,
+            "dueDate": dueDate
         }
         console.log('[callApi]' + data.taskName + ' / ' + data.dueDate);
         console.log(data);
