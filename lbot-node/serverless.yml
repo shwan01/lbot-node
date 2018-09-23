@@ -19,11 +19,30 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/task"
     - Effect: Allow
       Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/user"
+
+    - Effect: Allow
+      Action:
         - logs:CreateLogGroup
         - logs:CreateLogStream
         - logs:PutLogEvents
       Resource:
         - "*"
+custom:
+  defaultStage: dev
+  profiles:
+    dev: sls
+    prd: sls
+  conf:
+    environment:
+      dev: ${file(./conf/dev.json)}
+      prd: ${file(./conf/prd.json)}
 
 # you can add packaging information here
 #package:
@@ -47,7 +66,6 @@ functions:
       - http:
           path: tasks
           method: get
-
   getTasksById:
     handler: dist/tasks/handdler.getTasksById
     events:
@@ -66,6 +84,15 @@ functions:
       - http:
           path: tasks
           method: delete
+  postLine:
+    handler: dist/line/handler.postLine
+    events:
+      - http:
+          path: line
+          method: post
+    environment:
+      CHANNEL_ACCESS_TOKEN: ${self:custom.conf.environment.${self:provider.stage}.CHANNEL_ACCESS_TOKEN}
+      API_URI: ${self:custom.conf.environment.${self:provider.stage}.API_URI}
 
   updateTasks:
     handler: dist/tasks/handler.updateTasks
