@@ -58,37 +58,37 @@ functions:
     handler: handler.hello
     events:
       - http:
-          path: hello
+          path: api/hello
           method: get
   getTasksList:
     handler: dist/tasks/handler.getTasksList
     events:
       - http:
-          path: tasks
+          path: api/tasks
           method: get
   getTasksById:
     handler: dist/tasks/handdler.getTasksById
     events:
       - http:
-          path: tasks/{id}
+          path: api/tasks/{id}
           method: get
   addTasks:
     handler: dist/tasks/handler.addTasks
     events:
       - http:
-          path: tasks
+          path: api/tasks
           method: post
   deleteTasks:
     handler: dist/tasks/handler.deleteTasks
     events:
       - http:
-          path: tasks
+          path: api/tasks
           method: delete
   postLine:
     handler: dist/line/handler.postLine
     events:
       - http:
-          path: line
+          path: api/line
           method: post
     environment:
       CHANNEL_ACCESS_TOKEN: ${self:custom.conf.environment.${self:provider.stage}.CHANNEL_ACCESS_TOKEN}
