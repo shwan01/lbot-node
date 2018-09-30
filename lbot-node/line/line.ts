@@ -32,18 +32,27 @@ export const receiveMessages = (lineEvent, contents, callback): void => {
   console.log('[DEBUG]receiveMessages: ' + JSON.stringify(lineEvent));
   const message = lineEvent.message.text;
   const userId = lineEvent.source.userId;
+  let id = lineEvent.source.roomId ? lineEvent.source.roomId : userId;
+  id = lineEvent.source.groupId ? lineEvent.source.groupId : userId;
   const replyToken = lineEvent.replyToken;
   switch (message){
     case 'マイタスク一覧':
-      request.get(process.env.API_URI + 'tasks?ownerId=' + userId)
+      request.get(process.env.API_URI + 'tasks?ownerId=' + id)
                 .then((response) => {
-                  console.log('[DEBUG]マイタスク一覧取得: ' + JSON.stringify(response));
-                  replyMessage(JSON.stringify(response), replyToken);
+                  response = JSON.parse(response);
+                  console.log('[DEBUG]マイタスク一覧取得: ' + JSON.stringify(response.todos));
+                  // replyMessage(JSON.stringify(response.todos), replyToken);
+                  let messages: line.TemplateMessage[] = [];
+                  response.todos.forEach(task => {
+                    const message: line.TemplateMessage = createMessage(task)
+                    messages.push(message);
+                  });
+                  replyCalMessage(messages, replyToken);
                 })
-                .catch((error) => {
-                  console.log('[ERROR]マイタスク一覧取得: ' + JSON.stringify(error));
-                  replyMessage('なんかおかしいよ', replyToken);
-                });
+                // .catch((error) => {
+                //   console.log('[ERROR]マイタスク一覧取得: ' + JSON.stringify(error));
+                //   replyMessage('なんかおかしいよ', replyToken);
+                // });
       break;
     case '登録':
       //てすと用
@@ -79,3 +88,56 @@ const replyMessage = (text: string, replyToken): void => {
           console.log('[ERROR]返信エラー' + JSON.stringify(err));
         });
 };
+
+/**
+ * 返信を送る
+ * @param text 返信メッセージ
+ * @param replyToken 返信に必要なトークン
+ */
+const replyCalMessage = (message: line.TemplateMessage[], replyToken): void => {
+  const client = new line.Client({
+    channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  });
+
+  console.log('[INFO]返信メッセージ: ' + JSON.stringify(message));
+
+  client.replyMessage(replyToken, message)
+        .then((res) => {
+          console.log('[INFO]返信完了: ' + res);
+        })
+        .catch((err) => {
+          console.log('[ERROR]返信エラー' + err);
+        });
+};
+
+const createMessage = (task) :line.TemplateMessage => {
+
+  const template :line.TemplateButtons = {
+    type: "buttons",
+    title: task.taskName,
+    text: "期限：なし",
+    actions: [
+      {
+        type: "postback",
+        label: "まかせて😎",
+        data: "action=assign"
+      },
+      {
+        type: "postback",
+        label: "もっと見る",
+        data: "action=detail"
+      }
+  ]
+  };
+  if(task.dueDate){
+    template['text'] = "期限：" + task.dueDate;
+  }
+
+  const message :line.TemplateMessage = {
+          "type": "template",
+          "altText": "登録されたタスクがあります",
+          "template": template
+  };
+  console.log(message);
+  return message;
+}
