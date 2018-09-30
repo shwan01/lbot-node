@@ -30,12 +30,11 @@ export default class InputForm extends React.Component {
                 id = this.props.userId;
         }
         id = 'test01'
-        const url = 'https://xi9q10jx5j.execute-api.ap-northeast-1.amazonaws.com/dev/tasks?ownerId=' + id;
+        const url = 'https://do169bplvaohf.cloudfront.net/api/tasks?ownerId=' + id;
         console.log('[callGetTasksApi]' + id);
         $.ajax({
             url: url,
             type:'GET',
-            crossDomain: true,
         }).done(function (data) {
             console.log(JSON.stringify(data));
             data.todos.forEach((task)=>{
@@ -45,11 +44,11 @@ export default class InputForm extends React.Component {
                 });
             })
             this.setState({tasks : this.state.tasks});
-        }).fail(function (err) {
+        }.bind(this)).fail(function (err) {
             console.log(JSON.stringify(err));
             // TODO: Errorの時は閉じずにエラーを教える.
             // HackMe: 今はCORSのエラーが絶対くるのでとりあえず閉じている.
-        });
+        }.bind(this));
     }
 
     setDateValue(i){
@@ -87,7 +86,7 @@ export default class InputForm extends React.Component {
             break;
         }
     }
-   
+
     addTask() {
         console.log('add');
         const taskName = this.refs.newText.value;
@@ -209,7 +208,7 @@ export default class InputForm extends React.Component {
             default:
                 id = this.props.userId;
         }
-        const url = 'https://xi9q10jx5j.execute-api.ap-northeast-1.amazonaws.com/dev/tasks';
+        const url = 'https://do169bplvaohf.cloudfront.net/api/tasks';
         const data = {
             "ownerId": id,
             "taskName": taskName,
@@ -270,9 +269,15 @@ export default class InputForm extends React.Component {
                     <div className={"tasks-list"}>
                     <ul class="list-group">
                         {this.state.tasks.map((task, i) => {
-                            return <li key={i} class="list-group-item tasks-list-part">
-                                    {task.taskName}
-                                </li>
+                            // return <li key={i} class="list-group-item tasks-list-part">
+                            //         {task.taskName}
+                            //     </li>
+                            return   <div class="list-group-item list-group-item-action flex-column align-items-start tasks-list-part">
+                            <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">{task.taskName}</p>
+                            <small>{task.dueDate}</small>
+                            </div>
+                            </div>
                         })}
                     </ul>
                     </div>

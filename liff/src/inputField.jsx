@@ -18,7 +18,7 @@ export default class InputFieled extends React.Component {
             "taskName": this.state.taskName,
             "dueDate": this.state.dueDate
         }
-         console.log(data);
+        console.log(data);
         $.ajax({
             url: url,
             type:'POST',
