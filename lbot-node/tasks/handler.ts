@@ -55,3 +55,10 @@ export const updateComplicationStatus = (event, contents, callback): void => {
         .then(() => tasks.updateComplicationStatus(event, contents, callback))
         .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
 };
+/**
+ * 毎朝タスク通知API
+ */
+export const mornigNotifyTasks = (event, contents, callback): void => {
+  tasks.mornigNotifyTasks(event, contents, callback)
+   .catch((error) => callback(null, ApiResponseUtils.createErrorResponse(error)));
+};
