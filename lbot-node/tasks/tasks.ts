@@ -1,5 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { ApiResponseUtils } from '../common/apiResponseUtils';
+import { join } from 'bluebird';
 
 /**
  * ユーザー別タスク一覧取得API
@@ -176,8 +177,37 @@ const generateParams =(body) => {
     },
     UpdateExpression: ModifiedUpdateExpression,
     ExpressionAttributeValues:attributeMap,
-    ReturnValues:"UPDATED_NEW"
+    ReturnValues:"UPDATED_NEW",
       };
       console.log(params);
     return params;
   }
+
+/**
+ * 毎朝タスク通知API
+ * 午前7時に所持している未完了タスクを通知する
+ */
+export const notifyTasksOnTheMorning = (event, content, callback): void => {
+  const dynamoDb = new DynamoDB.DocumentClient();
+  const Params = {
+    TableName: 'task',
+  };
+  let response = new Array();　
+//  const incompleteTasks = new Array();
+   // 未完了タスクのみにする
+  // tasks全部持ってくる
+  dynamoDb.scan(Params, (error, result) => {
+    if (error) {
+      callback(null, ApiResponseUtils.createErrorResponse(error));
+    }
+    // 未完了タスクのみ選択
+    // result.Items.forEach = (task) => {
+    //   if (task.isComplicated === 0){
+    //     incompleteTasks.push(task);
+    //   }   
+    // };
+    const incompleteTasks = result.Items.filter(item => item.isComplicated === 0)
+    response.push(incompleteTasks);
+    callback(null, ApiResponseUtils.createResponse200(null, response));
+  });
+};

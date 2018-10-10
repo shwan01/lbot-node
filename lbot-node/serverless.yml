@@ -106,6 +106,10 @@ functions:
       - http:
           path: tasks/complicationStatus
           method: put
+  mornigNotifyTasks:
+    handler: dist/tasks/handler.notifyTasksOnTheMorning
+    events:
+      - schedule: cron(0 16 * * ? *)
 resources:
   Resources:
     TodosDynamoDbTable:
