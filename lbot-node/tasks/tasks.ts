@@ -187,12 +187,13 @@ const generateParams =(body) => {
  * 毎朝タスク通知API
  * 午前7時に所持している未完了タスクを通知する
  */
-export const mornigNotifyTasks = (event, content, callback): void => {
+export const notifyTasksOnTheMorning = (event, content, callback): void => {
   const dynamoDb = new DynamoDB.DocumentClient();
   const Params = {
     TableName: 'task',
   };
-  let response = new Map();
+  let response = new Array();　
+  const incompleteTasks = new Array();
    // 未完了タスクのみにする
   // tasks全部持ってくる
   dynamoDb.scan(Params, (error, result) => {
@@ -200,13 +201,12 @@ export const mornigNotifyTasks = (event, content, callback): void => {
       callback(null, ApiResponseUtils.createErrorResponse(error));
     }
     // 未完了タスクのみ選択
-    for (let i in result.Items){
-      const incompleteTasks = new Array();
-      if (i. get(isComplicated) = 0){
-        incompleteTasks.push(i);
-    }
-      response.set(i.get(ownerId),incompleteTasks);
+    result.Items.forEach = (task) => {
+      if (task.isComplicated === 0){
+        incompleteTasks.push(task);
+      }   
     };
+    response.push(incompleteTasks);
     callback(null, ApiResponseUtils.createResponse200(null, response));
   });
 };
