@@ -11,7 +11,7 @@ export default class InputForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tasks:[]
+            tasks:[{taskName:"てすと用1", dueDate:"2018-10-30"},{taskName:"てすとよう2"}]
         };
     }
 
@@ -104,7 +104,7 @@ export default class InputForm extends React.Component {
 
         //保存
         this.setState({tasks : this.state.tasks});
-        this.submitTasks(taskName, dueDate)
+        this.callAddTasksApi(taskName, dueDate);
         console.log('[add]'+ taskName + ' / ' + dueDate);
         // テキストフィールド初期化
         this.refs.newText.value='';
@@ -272,15 +272,25 @@ export default class InputForm extends React.Component {
                             // return <li key={i} class="list-group-item tasks-list-part">
                             //         {task.taskName}
                             //     </li>
-                            return   <div class="list-group-item list-group-item-action flex-column align-items-start tasks-list-part">
-                            <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-1">{task.taskName}</p>
-                            <small>{task.dueDate}</small>
-                            </div>
+                            // return   <div class="list-group-item list-group-item-action flex-column align-items-start tasks-list-part">
+                            // <div class="d-flex w-100 justify-content-between">
+                            // <p class="mb-1">{task.taskName}</p>
+                            // <small>{task.dueDate}</small>
+                            // </div>
+                            // </div>
+                            return <div class="input-group mb-3 edit-task-form">
+                                <div class="input-group-prepend edit-task-check">
+                                    <div class="input-group-text edit-task-check">
+                                    <input type="checkbox" aria-label="Checkbox for following text input" class="edit-task-box"/>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control edit-task-text" aria-label="Text input with checkbox" defaultValue={task.taskName} onChange/>
                             </div>
                         })}
                     </ul>
                     </div>
+
+
                     <div class="row mx-auto submit-form">
                         <div className={"mgr80"}>
                             <button type="button" class="btn btn-lg btn-primary taskSubmitbtn" onClick={() => this.submitTasks()}>送信する</button>

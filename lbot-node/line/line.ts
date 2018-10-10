@@ -42,6 +42,7 @@ export const receiveMessages = (lineEvent, contents, callback): void => {
                   response = JSON.parse(response);
                   console.log('[DEBUG]マイタスク一覧取得: ' + JSON.stringify(response.todos));
                   // replyMessage(JSON.stringify(response.todos), replyToken);
+                  // HackMe: ↓の配列に5つ以上入るとエラーになる
                   let messages: line.TemplateMessage[] = [];
                   response.todos.forEach(task => {
                     const message: line.TemplateMessage = createMessage(task)
@@ -119,7 +120,7 @@ const createMessage = (task) :line.TemplateMessage => {
     actions: [
       {
         type: "postback",
-        label: "まかせて😎",
+        label: "自分にリマインド",
         data: "action=assign"
       },
       {
