@@ -32,7 +32,10 @@ export const receiveMessages = (lineEvent, contents, callback): void => {
   console.log('[DEBUG]receiveMessages: ' + JSON.stringify(lineEvent));
   const message = lineEvent.message.text;
   const userId = lineEvent.source.userId;
+  // HackMe: lineEventからtypeをとってswitch分岐でidを入れたい
+  // ルームならルームIDをいれる
   let id = lineEvent.source.roomId ? lineEvent.source.roomId : userId;
+  // グループならグループIDを入れる. ルームでもグループでもなければUserIdが入る
   id = lineEvent.source.groupId ? lineEvent.source.groupId : userId;
   const replyToken = lineEvent.replyToken;
   switch (message){
@@ -91,8 +94,8 @@ const replyMessage = (text: string, replyToken): void => {
 };
 
 /**
- * 返信を送る
- * @param text 返信メッセージ
+ * テンプレートメッセージを返信する
+ * @param message テンプレートメッセージの配列
  * @param replyToken 返信に必要なトークン
  */
 const replyCalMessage = (message: line.TemplateMessage[], replyToken): void => {
@@ -111,6 +114,7 @@ const replyCalMessage = (message: line.TemplateMessage[], replyToken): void => {
         });
 };
 
+// テンプレートメッセージを作成
 const createMessage = (task) :line.TemplateMessage => {
 
   const template :line.TemplateButtons = {
@@ -130,6 +134,7 @@ const createMessage = (task) :line.TemplateMessage => {
       }
   ]
   };
+  // 期限があれば期限をメッセージ本文に入れる
   if(task.dueDate){
     template['text'] = "期限：" + task.dueDate;
   }
