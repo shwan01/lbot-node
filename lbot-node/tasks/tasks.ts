@@ -193,7 +193,7 @@ export const notifyTasksOnTheMorning = (event, content, callback): void => {
     TableName: 'task',
   };
   let response = new Array();　
-  const incompleteTasks = new Array();
+//  const incompleteTasks = new Array();
    // 未完了タスクのみにする
   // tasks全部持ってくる
   dynamoDb.scan(Params, (error, result) => {
@@ -201,11 +201,12 @@ export const notifyTasksOnTheMorning = (event, content, callback): void => {
       callback(null, ApiResponseUtils.createErrorResponse(error));
     }
     // 未完了タスクのみ選択
-    result.Items.forEach = (task) => {
-      if (task.isComplicated === 0){
-        incompleteTasks.push(task);
-      }   
-    };
+    // result.Items.forEach = (task) => {
+    //   if (task.isComplicated === 0){
+    //     incompleteTasks.push(task);
+    //   }   
+    // };
+    const incompleteTasks = result.Items.filter(item => item.isComplicated === 0)
     response.push(incompleteTasks);
     callback(null, ApiResponseUtils.createResponse200(null, response));
   });
